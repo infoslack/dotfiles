@@ -1,0 +1,6 @@
+alias vi="vim"
+alias r="rails"
+alias cl="clear"
+alias jedi="ssh info"
+alias gp="git push"
+alias gc="git commit -m"
