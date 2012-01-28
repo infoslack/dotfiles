@@ -1,0 +1,7 @@
+My_Bash
+
+Está é a configuração do meu bash, adaptei pegando a configuração do @fnando: https://github.com/fnando/bash
+
+Para utilizar, basta um clone deste repositório para '~/.my_bash' e adicionar a seguinte linha ao seu '~/.bash_profile' ou equivalente:
+
+source ~/.bash/start.sh
