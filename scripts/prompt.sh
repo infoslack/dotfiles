@@ -77,9 +77,9 @@ export YELLOW="\[\033[0;33m\]"
       STATE="${STATE}${YELLOW}*${NO_COLOR}"
     fi
 
-    PS1="\n${RUBY_PROMPT}${YELLOW}\w\a${NO_COLOR} (${PROMPT_COLOR}${BRANCH}${NO_COLOR}${STATE}${NO_COLOR})\n\$ "
+    PS1="\n${RUBY_PROMPT}${YELLOW}\w\a${NO_COLOR} (${PROMPT_COLOR}${BRANCH}${NO_COLOR}${STATE}${NO_COLOR})\n → "
   else
-    PS1="\n${RUBY_PROMPT}${YELLOW}\w\a${NO_COLOR}\n\$ "
+    PS1="\n${RUBY_PROMPT}${YELLOW}\w\a${NO_COLOR}\n → "
   fi
 }
 
