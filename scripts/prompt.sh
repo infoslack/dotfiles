@@ -12,7 +12,7 @@ custom_prompt () {
   export LIGHT_RED="\[\033[1;31m\]"
   export RED="\[\033[0;31m\]"
   export WHITE="\[\033[1;37m\]"
-  export YELLOW="\[\033[0;33m\]"
+  export YELLOW="\[\033[0;34;1m\]"
 
   local BRANCH=`git branch 2> /dev/null | grep \* | sed 's/* //'`
 
@@ -77,9 +77,9 @@ custom_prompt () {
       STATE="${STATE}${YELLOW}*${NO_COLOR}"
     fi
 
-    PS1="\n${RUBY_PROMPT}${YELLOW}\w\a${NO_COLOR} (${PROMPT_COLOR}${BRANCH}${NO_COLOR}${STATE}${NO_COLOR})\n → "
+    PS1="\n${RUBY_PROMPT}${YELLOW}\w\a${NO_COLOR} (${PROMPT_COLOR}${BRANCH}${NO_COLOR}${STATE}${NO_COLOR})\n→ "
   else
-    PS1="\n${RUBY_PROMPT}${YELLOW}\w\a${NO_COLOR}\n → "
+    PS1="\n${RUBY_PROMPT}${YELLOW}\w\a${NO_COLOR}\n→ "
   fi
 }
 
