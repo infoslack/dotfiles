@@ -1,4 +1,4 @@
-##My_Bash
+==My_Bash
 
 Está é a configuração do meu bash, adaptei pegando a configuração do @fnando: https://github.com/fnando/bash
 
