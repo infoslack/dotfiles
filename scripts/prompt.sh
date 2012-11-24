@@ -3,17 +3,6 @@ custom_prompt () {
   history -c
   history -r
 
-  export BLUE="\[\033[0;34m\]"
-  export NO_COLOR="\[\e[0m\]"
-  export GRAY="\[\033[6;32;1m\]"
-  export GREEN="\[\033[0;32m\]"
-  export LIGHT_GRAY="\[\033[0;37m\]"
-  export LIGHT_GREEN="\[\033[1;32m\]"
-  export LIGHT_RED="\[\033[1;31m\]"
-  export RED="\[\033[0;31m\]"
-  export WHITE="\[\033[1;37m\]"
-  export YELLOW="\[\033[0;34;1m\]"
-
   local BRANCH=`git branch 2> /dev/null | grep \* | sed 's/* //'`
 
   if [[ "$BRANCH" = "" ]]; then
