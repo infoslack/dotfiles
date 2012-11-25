@@ -4,7 +4,7 @@ Está é a configuração do meu bash, adaptei pegando a configuração do @fnan
 
 Para utilizar, basta um clone deste repositório para '~/.my_bash' e adicionar a seguinte linha ao seu '~/.bash_profile' ou equivalente:
 
-        source ~/.bash/start.sh
+        source ~/.my_bash/start.sh
 
 Para instalar a configuração do Pry + Irb modificado execute o script de instalação:
 
