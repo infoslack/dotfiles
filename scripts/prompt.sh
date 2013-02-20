@@ -9,6 +9,10 @@ custom_prompt () {
     BRANCH=`git status 2> /dev/null | grep "On branch" | sed 's/# On branch //'`
   fi
 
+  if [[ "$BRANCH" = "" ]]; then
+    BRANCH=" $BRANCH "
+  fi
+
   local RUBY_VERSION=`ruby -e "puts RUBY_VERSION"`
 
   if [ -f Gemfile.lock ]; then
@@ -66,9 +70,9 @@ custom_prompt () {
       STATE="${STATE}${YELLOW}*${NO_COLOR}"
     fi
 
-    PS1="\n${RUBY_PROMPT}${YELLOW}\w\a${NO_COLOR} (${PROMPT_COLOR}${BRANCH}${NO_COLOR}${STATE}${NO_COLOR})\n→ "
+    PS1="\n${RUBY_PROMPT}${YELLOW}\w\a${NO_COLOR} (${PROMPT_COLOR}${BRANCH}${NO_COLOR}${STATE}${NO_COLOR})\n\$ "
   else
-    PS1="\n${RUBY_PROMPT}${YELLOW}\w\a${NO_COLOR}\n→ "
+    PS1="\n${RUBY_PROMPT}${YELLOW}\w\a${NO_COLOR}\n\$ "
   fi
 }
 
