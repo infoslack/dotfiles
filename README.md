@@ -1,6 +1,8 @@
 ##My_Bash
 
-This is my bash configuration, adptation of [@fnando]:https://github.com/fnando/bash
+This is my bash configuration, adptation of [@fnando](https://github.com/fnando/bash)
+
+---
 
 ####Install:
 
