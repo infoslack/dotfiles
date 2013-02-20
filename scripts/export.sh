@@ -1,5 +1,6 @@
 export PATH="/opt/local/bin:/opt/local/sbin:/opt/local/ruby/gems/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 export GEM_HOME="/opt/local/ruby/gems"
+export GEM_PATH="/opt/local/ruby/gems"
 
 export BLUE="\[\033[0;34m\]"
 export NO_COLOR="\[\e[0m\]"
