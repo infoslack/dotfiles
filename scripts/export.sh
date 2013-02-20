@@ -1,3 +1,10 @@
+# Set the values for some environment variables:
+export MINICOM="-c on"
+export MANPATH=/usr/local/man:/usr/man
+export HOSTNAME="`cat /etc/HOSTNAME`"
+export LESSOPEN="|lesspipe.sh %s"
+export LESS="-M"
+
 # System PATH
 export PATH="/opt/local/bin:/opt/local/sbin:/opt/local/ruby/gems/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 export GEM_HOME="/opt/local/ruby/gems"
