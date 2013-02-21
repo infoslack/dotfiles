@@ -1,3 +1,9 @@
+# Set values for history
+export HISTFILE=~/.bash_history
+export HISTSIZE=10000
+export HISTFILESIZE=10000
+export HISTCONTROL="ignoredups"
+
 # Set the values for some environment variables:
 export MINICOM="-c on"
 export MANPATH=/usr/local/man:/usr/man
