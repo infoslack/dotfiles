@@ -28,6 +28,11 @@ export RED="\[\033[0;31m\]"
 export WHITE="\[\033[1;37m\]"
 export YELLOW="\[\033[0;34;1m\]"
 
+# Text editor for crontab
+if [ ! "/usr/bin/crontab" = "0" ]; then
+  export VISUAL="vim"
+fi
+
 # Append any additional sh scripts found in /etc/profile.d/ [Slackware Linux]:
 for profile_script in /etc/profile.d/*.sh ; do
   if [ -x $profile_script ]; then
