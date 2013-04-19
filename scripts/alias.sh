@@ -1,6 +1,7 @@
 alias vi="vim"
 alias cl="clear"
 alias ll="ls -la"
+alias tmux="TERM=screen-256color-bce tmux"
 alias labs="ssh infoslack -t tmux a"
 alias bx="bundle exec"
 alias grep="grep --colour=auto"
