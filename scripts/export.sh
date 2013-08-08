@@ -16,6 +16,9 @@ export PATH="/opt/local/bin:/opt/local/sbin:/opt/local/ruby/gems/bin:/usr/local/
 export GEM_HOME="/opt/local/ruby/gems"
 export GEM_PATH="/opt/local/ruby/gems"
 
+export GOROOT=/opt/go
+export PATH=$PATH:$GOROOT/bin
+
 # Colors
 export BLUE="\[\033[0;34m\]"
 export NO_COLOR="\[\e[0m\]"
