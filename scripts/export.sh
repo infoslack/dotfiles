@@ -18,7 +18,8 @@ export GEM_HOME="/opt/local/ruby/gems"
 export GEM_PATH="/opt/local/ruby/gems"
 
 export GOROOT=/opt/go
-export PATH=$PATH:$GOROOT/bin
+export GOPATH=$GOROOT/_go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
 # Colors
 export BLUE="\[\033[0;34m\]"
