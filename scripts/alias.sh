@@ -16,3 +16,4 @@ alias cpu_2_on="echo 1 > /sys/devices/system/cpu/cpu2/online"
 alias cpu_3_on="echo 1 > /sys/devices/system/cpu/cpu3/online"
 alias monitor_2="xrandr --output LVDS1 --auto --output VGA1 --auto --right-of LVDS1"
 alias privchrome="google-chrome --user-data-dir --proxy-server=\"127.0.0.1:8118\""
+alias cam='mplayer -tv driver=v4l2:device=/dev/video0 tv://'
