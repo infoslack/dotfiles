@@ -53,6 +53,7 @@ endif
 "file type settings
 au BufNewFile,BufRead *.go setlocal noet ts=4 sw=4 sts=4
 au BufNewFile,BufRead *.md setlocal noet ts=4 sw=4
+au BufNewFile,BufRead Makefile setlocal noet ts=4 sw=4
 
 "disable arrow keys
 noremap <Up>    :echo "YOU NOOB!"<cr>
