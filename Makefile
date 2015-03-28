@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-install: install-bash install-dot
+install: install-bash install-dot install-vim
 
 install-bash:
 				cp -rf `pwd`/bash ~/.bash
@@ -18,3 +18,8 @@ install-dot:
 				cp -f `pwd`/dot/tmux ~/.tmux.conf
 				cp -f `pwd`/dot/gitconfig ~/.gitconfig
 				cp -f `pwd`/dot/gitignore ~/.gitignore_global
+
+install-vim:
+				rm -rf ~/.vim
+				git clone https://github.com/infoslack/vimfiles.git ~/.vim
+				git submodule update --init
