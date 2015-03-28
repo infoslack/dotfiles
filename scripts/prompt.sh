@@ -90,6 +90,8 @@ custom_prompt () {
   else
     PS1="${YELLOW}\w${NO_COLOR} % "
   fi
+
+  umask 022
 }
 
 PROMPT_COMMAND=custom_prompt
