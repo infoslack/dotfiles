@@ -1,0 +1,61 @@
+"define source
+source ~/.vim/vimrc
+
+"highlight current line
+set cursorline
+
+"use ag for search
+let g:ackprg = 'ag --nogroup --nocolor --column'
+
+"settings airline
+"set fillchars+=stl:\ ,stlnc:\
+set laststatus=2
+let g:airline_theme= "zenburn"
+
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+
+" old vim-powerline symbols
+let g:airline_left_sep = '⮀'
+let g:airline_left_alt_sep = '⮁'
+let g:airline_right_sep = '⮂'
+let g:airline_right_alt_sep = '⮃'
+let g:airline_symbols.branch = '⭠'
+let g:airline_symbols.readonly = '⭤'
+let g:airline_symbols.linenr = '⭡'
+
+"color scheme
+let g:CSApprox_loaded = 1
+if $COLORTERM == 'gnome-terminal'
+    set term=gnome-256color
+    set background=dark
+    colorscheme molokai
+else
+    if $TERM == 'xterm'
+        set  term=xterm-256color
+        set background=dark
+        colorscheme solarized
+    else "rule for tmux
+        set background=dark
+        colorscheme solarized
+    endif
+endif
+
+"create tabs
+nmap <leader>t :tabnew<CR>
+
+"column limit 80 chars
+if exists('+colorcolumn')
+  set colorcolumn=73
+endif
+
+"file type settings
+au BufNewFile,BufRead *.go setlocal noet ts=4 sw=4 sts=4
+au BufNewFile,BufRead *.md setlocal noet ts=4 sw=4
+
+"disable arrow keys
+noremap <Up>    :echo "YOU NOOB!"<cr>
+noremap <Down>  :echo "YOU NOOB!"<cr>
+noremap <Left>  :echo "YOU NOOB!"<cr>
+noremap <Right> :echo "YOU NOOB!"<cr>

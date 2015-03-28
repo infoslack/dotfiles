@@ -1,0 +1,4 @@
+gemhome: "/opt/local/ruby/gems"
+gempath:
+  - /opt/local/ruby/gems
+gem: --no-rdoc --no-ri

@@ -1,3 +1,6 @@
+# Original:
+# https://github.com/fnando/dotfiles/blob/master/files/.bash/prompt.sh
+
 custom_prompt () {
   history -a
   history -c

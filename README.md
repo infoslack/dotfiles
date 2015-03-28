@@ -1,14 +1,10 @@
-my_bash
+dotfiles
 =======
 
-This is my bash configuration, the `custom_prompt` is adaptation of [@fnando](https://github.com/fnando/dotfiles)
+This is my dotfiles and bash configuration
 
-####Install:
+### Install:
 
-Clone this repo into your home directory either as .my_bash:
-
-      git clone git@github.com:infoslack/my_bash.git ~/.my_bash
-
-Now you should added source to load script:
-
-      echo "source ~/.my_bash/start.sh" > ~/.bash_profile  or  equivalent
+	$ git@github.com:infoslack/dotfiles.git
+	$ cd dotfiles
+	$ make

@@ -1,0 +1,9 @@
+*.swp
+*.swo
+*~
+*.directory
+.rspec
+.keep
+spec/enumerations/
+db/structure.sql
+db/schema.rb
