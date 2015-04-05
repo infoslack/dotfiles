@@ -7,6 +7,11 @@ set cursorline
 "use ag for search
 let g:ackprg = 'ag --nogroup --nocolor --column'
 
+"set list and listchars, by default is off
+set list listchars=tab:>-,eol:¬
+set nowrap
+set wrap linebreak nolist
+
 "settings airline
 "set fillchars+=stl:\ ,stlnc:\
 set laststatus=2
