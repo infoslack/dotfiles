@@ -22,4 +22,4 @@ install-dot:
 install-vim:
 	rm -rf ~/.vim
 	git clone https://github.com/infoslack/vimfiles.git ~/.vim
-	git submodule update --init
+	cd ~/.vim && git submodule update --init
