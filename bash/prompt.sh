@@ -23,7 +23,7 @@ custom_prompt () {
     local BRANCH=`git branch 2> /dev/null | grep \* | sed 's/* //'`
 
     if [[ "$BRANCH" = "" ]]; then
-      BRANCH=`git status 2> /dev/null | grep "On branch" | sed 's/# On branch //'`
+      BRANCH=`git status 2> /dev/null | grep "On branch" | sed -E 's/^.*On branch //'`
     fi
 
     if [[ "$BRANCH" = "" ]]; then
@@ -37,17 +37,17 @@ custom_prompt () {
     fi
 
     local RUBY_PROMPT=""
-    local STATUS=`git status 2>/dev/null`
-    local PROMPT_COLOR=$GREEN
+    local STATUS=`git status 2> /dev/null | tr "\\n" " "`
+    local PROMPT_COLOR=""
     local STATE=" "
     local NOTHING_TO_COMMIT="# Initial commit"
-    local BEHIND="# Your branch is behind"
-    local AHEAD="# Your branch is ahead"
-    local UNTRACKED="# Untracked files"
+    local BEHIND="Your branch is behind"
+    local AHEAD="Your branch is ahead"
+    local UNTRACKED="Untracked files"
     local DIVERGED="have diverged"
-    local CHANGED="# Changed but not updated"
-    local TO_BE_COMMITED="# Changes to be committed"
-    local CHANGES_NOT_STAGED="# Changes not staged for commit"
+    local CHANGED="Changed but not updated"
+    local TO_BE_COMMITED="Changes to be committed"
+    local CHANGES_NOT_STAGED="Changes not staged for commit"
     local LOG=`git log -1 2> /dev/null`
 
     if [[ "$RAILS_VERSION" ]]; then
