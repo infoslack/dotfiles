@@ -18,6 +18,7 @@ install-dot:
 	cp -f `pwd`/dot/tmux ~/.tmux.conf
 	cp -f `pwd`/dot/gitconfig ~/.gitconfig
 	cp -f `pwd`/dot/gitignore ~/.gitignore_global
+	cp -f `pwd`/dot/config.json ~/.config/peco/config.json
 
 install-vim:
 	rm -rf ~/.vim
