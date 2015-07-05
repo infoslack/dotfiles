@@ -60,3 +60,17 @@ chrome(){
     --name chrome \
     jess/chrome --user-data-dir=/data "$@"
 }
+
+wpscan(){
+docker run --rm -it \
+  -v /tmp/wpscan/cache:/wpscan/cache \
+  --log-driver none \
+  infoslack/wpscan "$@"
+}
+
+arachni(){
+docker run --rm -it \
+  -v $(pwd)/arachni_pentest:/pentest \
+  --log-driver none \
+  infoslack/arachni "$@"
+}
