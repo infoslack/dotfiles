@@ -27,7 +27,7 @@
 # This order should be applied to lists, alternatives and code blocks.
 
 __docker_q() {
-	docker 2>/dev/null "$@"
+	docker ${host:+-H "$host"} 2>/dev/null "$@"
 }
 
 __docker_containers_all() {
@@ -58,6 +58,18 @@ __docker_containers_unpauseable() {
 	__docker_containers_all '.State.Paused'
 }
 
+__docker_container_names() {
+	local containers=( $(__docker_q ps -aq --no-trunc) )
+	local names=( $(__docker_q inspect --format '{{.Name}}' "${containers[@]}") )
+	names=( "${names[@]#/}" ) # trim off the leading "/" from the container names
+	COMPREPLY=( $(compgen -W "${names[*]}" -- "$cur") )
+}
+
+__docker_container_ids() {
+	local containers=( $(__docker_q ps -aq) )
+	COMPREPLY=( $(compgen -W "${containers[*]}" -- "$cur") )
+}
+
 __docker_image_repos() {
 	local repos="$(__docker_q images | awk 'NR>1 && $1 != "<none>" { print $1 }')"
 	COMPREPLY=( $(compgen -W "$repos" -- "$cur") )
@@ -82,13 +94,19 @@ __docker_containers_and_images() {
 	COMPREPLY+=( "${containers[@]}" )
 }
 
+# Finds the position of the first word that is neither option nor an option's argument.
+# If there are options that require arguments, you should pass a glob describing those
+# options, e.g. "--option1|-o|--option2"
+# Use this function to restrict completions to exact positions after the argument list.
 __docker_pos_first_nonflag() {
 	local argument_flags=$1
 
-	local counter=$cpos
+	local counter=$((command_pos + 1))
 	while [ $counter -le $cword ]; do
 		if [ -n "$argument_flags" ] && eval "case '${words[$counter]}' in $argument_flags) true ;; *) false ;; esac"; then
 			(( counter++ ))
+			# eat "=" in case of --option=arg syntax
+			[ "${words[$counter]}" = "=" ] && (( counter++ ))
 		else
 			case "${words[$counter]}" in
 				-*)
@@ -98,10 +116,36 @@ __docker_pos_first_nonflag() {
 					;;
 			esac
 		fi
+
+		# Bash splits words at "=", retaining "=" as a word, examples:
+		# "--debug=false" => 3 words, "--log-opt syslog-facility=daemon" => 4 words
+		while [ "${words[$counter + 1]}" = "=" ] ; do
+			counter=$(( counter + 2))
+		done
+
 		(( counter++ ))
 	done
 
 	echo $counter
+}
+
+# Returns the value of the first option matching option_glob.
+# Valid values for option_glob are option names like '--log-level' and
+# globs like '--log-level|-l'
+# Only positions between the command and the current word are considered.
+__docker_value_of_option() {
+	local option_glob=$1
+
+	local counter=$((command_pos + 1))
+	while [ $counter -lt $cword ]; do
+		case ${words[$counter]} in
+			$option_glob )
+				echo ${words[$counter + 1]}
+				break
+				;;
+		esac
+		(( counter++ ))
+	done
 }
 
 # Transforms a multiline list of strings into a single line string
@@ -170,6 +214,87 @@ __docker_capabilities() {
 	" -- "$cur" ) )
 }
 
+__docker_log_drivers() {
+	COMPREPLY=( $( compgen -W "
+		fluentd
+		gelf
+		journald
+		json-file
+		none
+		syslog
+	" -- "$cur" ) )
+}
+
+__docker_log_driver_options() {
+	# see docs/reference/logging/index.md
+	local fluentd_options="fluentd-address fluentd-tag"
+	local gelf_options="gelf-address gelf-tag"
+	local syslog_options="syslog-address syslog-facility syslog-tag"
+
+	case $(__docker_value_of_option --log-driver) in
+		'')
+			COMPREPLY=( $( compgen -W "$fluentd_options $gelf_options $syslog_options" -S = -- "$cur" ) )
+			;;
+		fluentd)
+			COMPREPLY=( $( compgen -W "$fluentd_options" -S = -- "$cur" ) )
+			;;
+		gelf)
+			COMPREPLY=( $( compgen -W "$gelf_options" -S = -- "$cur" ) )
+			;;
+		syslog)
+			COMPREPLY=( $( compgen -W "$syslog_options" -S = -- "$cur" ) )
+			;;
+		*)
+			return
+			;;
+	esac
+
+	compopt -o nospace
+}
+
+__docker_complete_log_driver_options() {
+	# "=" gets parsed to a word and assigned to either $cur or $prev depending on whether
+	# it is the last character or not. So we search for "xxx=" in the the last two words.
+	case "${words[$cword-2]}$prev=" in
+		*gelf-address=*)
+			COMPREPLY=( $( compgen -W "udp" -S "://" -- "${cur#=}" ) )
+			compopt -o nospace
+			return
+			;;
+		*syslog-address=*)
+			COMPREPLY=( $( compgen -W "tcp udp unix" -S "://" -- "${cur#=}" ) )
+			compopt -o nospace
+			return
+			;;
+		*syslog-facility=*)
+			COMPREPLY=( $( compgen -W "
+				auth
+				authpriv
+				cron
+				daemon
+				ftp
+				kern
+				local0
+				local1
+				local2
+				local3
+				local4
+				local5
+				local6
+				local7
+				lpr
+				mail
+				news
+				syslog
+				user
+				uucp
+			" -- "${cur#=}" ) )
+			return
+			;;
+	esac
+	return 1
+}
+
 # a selection of the available signals that is most likely of interest in the
 # context of docker containers.
 __docker_signals() {
@@ -200,16 +325,25 @@ _docker_docker() {
 		--selinux-enabled
 		--tls
 		--tlsverify
+		--userland-proxy=false
 		--version -v
 	"
 
 	case "$prev" in
-		--graph|-g)
+		--exec-root|--graph|-g)
 			_filedir -d
+			return
+			;;
+		--log-driver)
+			__docker_log_drivers
 			return
 			;;
 		--log-level|-l)
 			COMPREPLY=( $( compgen -W "debug info warn error fatal" -- "$cur" ) )
+			return
+			;;
+		--log-opt)
+			__docker_log_driver_options
 			return
 			;;
 		--pidfile|-p|--tlscacert|--tlscert|--tlskey)
@@ -225,12 +359,17 @@ _docker_docker() {
 			;;
 	esac
 
+	__docker_complete_log_driver_options && return
+
 	case "$cur" in
 		-*)
 			COMPREPLY=( $( compgen -W "$boolean_options $main_options_with_args" -- "$cur" ) )
 			;;
 		*)
-			COMPREPLY=( $( compgen -W "${commands[*]} help" -- "$cur" ) )
+			local counter="$(__docker_pos_first_nonflag $main_options_with_args_glob)"
+			if [ $cword -eq $counter ]; then
+				COMPREPLY=( $( compgen -W "${commands[*]} help" -- "$cur" ) )
+			fi
 			;;
 	esac
 }
@@ -251,22 +390,25 @@ _docker_attach() {
 
 _docker_build() {
 	case "$prev" in
-		--tag|-t)
-			__docker_image_repos_and_tags
+		--cgroup-parent|--cpuset-cpus|--cpuset-mems|--cpu-shares|-c|--cpu-period|--cpu-quota|--memory|-m|--memory-swap)
 			return
 			;;
 		--file|-f)
 			_filedir
 			return
 			;;
+		--tag|-t)
+			__docker_image_repos_and_tags
+			return
+			;;
 	esac
 
 	case "$cur" in
 		-*)
-			COMPREPLY=( $( compgen -W "--file -f --force-rm --help --no-cache --pull --quiet -q --rm --tag -t" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "--cgroup-parent --cpuset-cpus --cpuset-mems --cpu-shares -c --cpu-period --cpu-quota --file -f --force-rm --help --memory -m --memory-swap --no-cache --pull --quiet -q --rm --tag -t --ulimit" -- "$cur" ) )
 			;;
 		*)
-			local counter="$(__docker_pos_first_nonflag '--tag|-t')"
+			local counter="$(__docker_pos_first_nonflag '--cgroup-parent|--cpuset-cpus|--cpuset-mems|--cpu-shares|-c|--cpu-period|--cpu-quota|--file|-f|--memory|-m|--memory-swap|--tag|-t')"
 			if [ $cword -eq $counter ]; then
 				_filedir -d
 			fi
@@ -362,8 +504,6 @@ _docker_events() {
 			;;
 	esac
 
-	# "=" gets parsed to a word and assigned to either $cur or $prev depending on whether
-	# it is the last character or not. So we search for "xxx=" in the the last two words.
 	case "${words[$cword-2]}$prev=" in
 		*container=*)
 			cur="${cur#=}"
@@ -371,7 +511,33 @@ _docker_events() {
 			return
 			;;
 		*event=*)
-			COMPREPLY=( $( compgen -W "create destroy die export kill pause restart start stop unpause" -- "${cur#=}" ) )
+			COMPREPLY=( $( compgen -W "
+				attach
+				commit
+				copy
+				create
+				delete
+				destroy
+				die
+				exec_create
+				exec_start
+				export
+				import
+				kill
+				oom
+				pause
+				pull
+				push
+				rename
+				resize
+				restart
+				start
+				stop
+				tag
+				top
+				unpause
+				untag
+			" -- "${cur#=}" ) )
 			return
 			;;
 		*image=*)
@@ -389,9 +555,15 @@ _docker_events() {
 }
 
 _docker_exec() {
+	case "$prev" in
+		--user|-u)
+			return
+			;;
+	esac
+
 	case "$cur" in
 		-*)
-			COMPREPLY=( $( compgen -W "--detach -d --help --interactive -i -t --tty" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "--detach -d --help --interactive -i -t --tty -u --user" -- "$cur" ) )
 			;;
 		*)
 			__docker_containers_running
@@ -437,7 +609,10 @@ _docker_history() {
 _docker_images() {
 	case "$prev" in
 		--filter|-f)
-			COMPREPLY=( $( compgen -W "dangling=true" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "dangling=true label=" -- "$cur" ) )
+			if [ "$COMPREPLY" = "label=" ]; then
+				compopt -o nospace
+			fi
 			return
 			;;
 	esac
@@ -447,17 +622,20 @@ _docker_images() {
 			COMPREPLY=( $( compgen -W "true false" -- "${cur#=}" ) )
 			return
 			;;
+		*label=*)
+			return
+			;;
 	esac
 
 	case "$cur" in
 		-*)
-			COMPREPLY=( $( compgen -W "--all -a --filter -f --help --no-trunc --quiet -q" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "--all -a --digests --filter -f --help --no-trunc --quiet -q" -- "$cur" ) )
+			;;
+		=)
+			return
 			;;
 		*)
-			local counter=$(__docker_pos_first_nonflag)
-			if [ $cword -eq $counter ]; then
-				__docker_image_repos
-			fi
+			__docker_image_repos
 			;;
 	esac
 }
@@ -495,11 +673,16 @@ _docker_inspect() {
 		--format|-f)
 			return
 			;;
+		--type)
+                     COMPREPLY=( $( compgen -W "image container" -- "$cur" ) )
+                     return
+                        ;;
+
 	esac
 
 	case "$cur" in
 		-*)
-			COMPREPLY=( $( compgen -W "--format -f --help" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "--format -f --type --help" -- "$cur" ) )
 			;;
 		*)
 			__docker_containers_and_images
@@ -564,14 +747,14 @@ _docker_logout() {
 
 _docker_logs() {
 	case "$prev" in
-		--tail)
+		--since|--tail)
 			return
 			;;
 	esac
 
 	case "$cur" in
 		-*)
-			COMPREPLY=( $( compgen -W "--follow -f --help --tail --timestamps -t" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "--follow -f --help --since --tail --timestamps -t" -- "$cur" ) )
 			;;
 		*)
 			local counter=$(__docker_pos_first_nonflag '--tail')
@@ -616,7 +799,7 @@ _docker_ps() {
 			__docker_containers_all
 			;;
 		--filter|-f)
-			COMPREPLY=( $( compgen -S = -W "exited status" -- "$cur" ) )
+			COMPREPLY=( $( compgen -S = -W "exited id label name status" -- "$cur" ) )
 			compopt -o nospace
 			return
 			;;
@@ -626,6 +809,16 @@ _docker_ps() {
 	esac
 
 	case "${words[$cword-2]}$prev=" in
+		*id=*)
+			cur="${cur#=}"
+			__docker_container_ids
+			return
+			;;
+		*name=*)
+			cur="${cur#=}"
+			__docker_container_names
+			return
+			;;
 		*status=*)
 			COMPREPLY=( $( compgen -W "exited paused restarting running" -- "${cur#=}" ) )
 			return
@@ -647,6 +840,14 @@ _docker_pull() {
 		*)
 			local counter=$(__docker_pos_first_nonflag)
 			if [ $cword -eq $counter ]; then
+				for arg in "${COMP_WORDS[@]}"; do
+					case "$arg" in
+						--all-tags|-a)
+							__docker_image_repos
+							return
+							;;
+					esac
+				done
 				__docker_image_repos_and_tags
 			fi
 			;;
@@ -731,12 +932,15 @@ _docker_rmi() {
 _docker_run() {
 	local options_with_args="
 		--add-host
+		--blkio-weight
 		--attach -a
 		--cap-add
 		--cap-drop
 		--cgroup-parent
 		--cidfile
 		--cpuset
+		--cpu-period
+		--cpu-quota
 		--cpu-shares -c
 		--device
 		--dns
@@ -745,12 +949,14 @@ _docker_run() {
 		--env -e
 		--env-file
 		--expose
+		--group-add
 		--hostname -h
 		--ipc
 		--label -l
 		--label-file
 		--link
 		--log-driver
+		--log-opt
 		--lxc-conf
 		--mac-address
 		--memory -m
@@ -763,6 +969,7 @@ _docker_run() {
 		--security-opt
 		--user -u
 		--ulimit
+		--uts
 		--volumes-from
 		--volume -v
 		--workdir -w
@@ -802,7 +1009,7 @@ _docker_run() {
 			__docker_capabilities
 			return
 			;;
-		--cidfile|--cgroup-parent|--env-file|--label-file)
+		--cidfile|--env-file|--label-file)
 			_filedir
 			return
 			;;
@@ -855,7 +1062,11 @@ _docker_run() {
 			return
 			;;
 		--log-driver)
-			COMPREPLY=( $( compgen -W "json-file syslog none" -- "$cur") )
+			__docker_log_drivers
+			return
+			;;
+		--log-opt)
+			__docker_log_driver_options
 			return
 			;;
 		--net)
@@ -909,6 +1120,8 @@ _docker_run() {
 			return
 			;;
 	esac
+
+	__docker_complete_log_driver_options && return
 
 	case "$cur" in
 		-*)
@@ -970,7 +1183,7 @@ _docker_start() {
 _docker_stats() {
 	case "$cur" in
 		-*)
-			COMPREPLY=( $( compgen -W "--help" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "--no-stream --help" -- "$cur" ) )
 			;;
 		*)
 			__docker_containers_running
@@ -1114,10 +1327,14 @@ _docker() {
 		--api-cors-header
 		--bip
 		--bridge -b
+		--default-gateway
+		--default-gateway-v6
 		--default-ulimit
 		--dns
 		--dns-search
 		--exec-driver -e
+		--exec-opt
+		--exec-root
 		--fixed-cidr
 		--fixed-cidr-v6
 		--graph -g
@@ -1126,7 +1343,9 @@ _docker() {
 		--insecure-registry
 		--ip
 		--label
+		--log-driver
 		--log-level -l
+		--log-opt
 		--mtu
 		--pidfile -p
 		--registry-mirror
@@ -1138,24 +1357,32 @@ _docker() {
 	"
 
 	local main_options_with_args_glob=$(__docker_to_extglob "$main_options_with_args")
+	local host
 
 	COMPREPLY=()
 	local cur prev words cword
 	_get_comp_words_by_ref -n : cur prev words cword
 
-	local command='docker' cpos=0
+	local command='docker' command_pos=0
 	local counter=1
 	while [ $counter -lt $cword ]; do
 		case "${words[$counter]}" in
+			# save host so that completion can use custom daemon
+			--host|-H)
+				(( counter++ ))
+				host="${words[$counter]}"
+				;;
 			$main_options_with_args_glob )
 				(( counter++ ))
 				;;
 			-*)
 				;;
+			=)
+				(( counter++ ))
+				;;
 			*)
 				command="${words[$counter]}"
-				cpos=$counter
-				(( cpos++ ))
+				command_pos=$counter
 				break
 				;;
 		esac
