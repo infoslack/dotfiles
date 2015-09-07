@@ -30,13 +30,6 @@ custom_prompt () {
       BRANCH=" $BRANCH "
     fi
 
-    local RUBY_VERSION=`ruby -e "puts RUBY_VERSION"`
-
-    if [ -f Gemfile.lock ]; then
-      local RAILS_VERSION=`cat Gemfile.lock | grep -E " +rails \([0-9]+" | sed 's/ *rails (\(.*\))/\1/'`
-    fi
-
-    local RUBY_PROMPT=""
     local STATUS=`git status 2> /dev/null | tr "\\n" " "`
     local PROMPT_COLOR=""
     local STATE=" "
@@ -49,12 +42,6 @@ custom_prompt () {
     local TO_BE_COMMITED="Changes to be committed"
     local CHANGES_NOT_STAGED="Changes not staged for commit"
     local LOG=`git log -1 2> /dev/null`
-
-    if [[ "$RAILS_VERSION" ]]; then
-      local RAILS_PROMPT="${RAILS_VERSION}#"
-    fi
-
-    RUBY_PROMPT="${GRAY}[${RAILS_PROMPT}${RUBY_VERSION}]${NO_COLOR} "
 
     if [ "$STATUS" != "" ]; then
       if [[ "$STATUS" =~ "$CHANGES_NOT_STAGED" ]]; then
@@ -87,7 +74,7 @@ custom_prompt () {
         STATE="${STATE}${YELLOW}*${NO_COLOR}"
       fi
 
-      PS1="\n${RUBY_PROMPT}${YELLOW}\w\a${NO_COLOR} (${PROMPT_COLOR}${BRANCH}${NO_COLOR}${STATE}${NO_COLOR})\n% "
+      PS1="${YELLOW}\w\a${NO_COLOR} (${PROMPT_COLOR}${BRANCH}${NO_COLOR}${STATE}${NO_COLOR})\n% "
     fi
 
   else
