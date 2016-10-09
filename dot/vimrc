@@ -3,20 +3,20 @@ source ~/.vim/vimrc
 
 "highlight current line
 set cursorline
-
+"
 "set list and listchars, by default is off
 set list listchars=tab:>-,eol:¬
 set nowrap
 set wrap linebreak nolist
 
 "settings airline
-let g:airline_theme= "zenburn"
+let g:airline_theme= "solarized"
 
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
 
-" old vim-powerline symbols
+"old vim-powerline symbols
 let g:airline_left_sep = '⮀'
 let g:airline_left_alt_sep = '⮁'
 let g:airline_right_sep = '⮂'
@@ -35,10 +35,59 @@ else "rule for tmux
   colorscheme solarized
 endif
 
-"column limit 73 chars
+"column limit chars
 if exists('+colorcolumn')
-  set colorcolumn=73
+  set colorcolumn=79
 endif
 
 "file type settings
 au BufNewFile,BufRead Makefile setlocal noet ts=4 sw=4
+autocmd FileType asm set et sw=8 ts=8 sts=8
+au BufRead,BufNewFile Jenkinsfile set filetype=groovy
+
+" vim-go setup
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_types = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
+
+" Plugin key-mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+
+" Surround shortcuts
+map ,# ysiw#
+vmap ,# c#{<C-R>"}<ESC>
+
+map ," ysiw"
+vmap ," c"<C-R>""<ESC>
+
+map ,' ysiw'
+vmap ,' c'<C-R>"'<ESC>
+
+map ,( ysiw(
+map ,) ysiw)
+vmap ,( c( <C-R>" )<ESC>
+vmap ,) c(<C-R>")<ESC>
+
+map ,] ysiw]
+map ,[ ysiw[
+vmap ,[ c[ <C-R>" ]<ESC>
+vmap ,] c[<C-R>"]<ESC>
+
+map ,} ysiw}
+map ,{ ysiw{
+vmap ,} c{ <C-R>" }<ESC>
+vmap ,{ c{<C-R>"}<ESC>
+
+map ,` ysiw`
