@@ -1,6 +1,7 @@
 [user]
 	email = infoslack@gmail.com
 	name = Daniel Romero
+	signingkey = 7C0EEA09
 [color]
   ui = auto
 [core]

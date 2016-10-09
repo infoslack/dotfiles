@@ -9,10 +9,6 @@ setw -g pane-base-index 1
 # screen color
 set -g default-terminal "screen-256color"
 
-# encoding
-setw -g utf8 on
-set -g status-utf8 on
-
 # vi mode
 setw -g mode-keys vi
 
@@ -28,7 +24,7 @@ bind -t vi-copy 'y' copy-selection
 #bind -n C-l send-keys "clear" \; send-keys "Enter"
 
 # mouse OFF
-setw -g mode-mouse off
+set -g mouse on
 
 # window splitting
 unbind %
