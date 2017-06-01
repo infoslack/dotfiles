@@ -12,19 +12,6 @@ set wrap linebreak nolist
 "settings airline
 let g:airline_theme= "solarized"
 
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-
-"old vim-powerline symbols
-let g:airline_left_sep = '⮀'
-let g:airline_left_alt_sep = '⮁'
-let g:airline_right_sep = '⮂'
-let g:airline_right_alt_sep = '⮃'
-let g:airline_symbols.branch = '⭠'
-let g:airline_symbols.readonly = '⭤'
-let g:airline_symbols.linenr = '⭡'
-
 "color scheme
 if $TERM == 'xterm'
   set  term=xterm-256color
@@ -52,6 +39,9 @@ let g:go_highlight_fields = 1
 let g:go_highlight_types = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
+let g:go_fmt_command = "goimports"
+let g:go_get_update = 0
+let g:go_fmt_fail_silently = 1
 
 " Plugin key-mappings.
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
