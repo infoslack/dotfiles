@@ -12,9 +12,6 @@ install-bash:
 
 install-dot:
 	cp -f `pwd`/dot/vimrc ~/.vimrc
-	cp -f `pwd`/dot/irbrc ~/.irbrc
-	cp -f `pwd`/dot/pryrc ~/.pryrc
-	cp -f `pwd`/dot/gemrc ~/.gemrc
 	cp -f `pwd`/dot/tmux ~/.tmux.conf
 	cp -f `pwd`/dot/gitconfig ~/.gitconfig
 	cp -f `pwd`/dot/gitignore ~/.gitignore_global
