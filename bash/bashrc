@@ -1,4 +1,0 @@
-source ~/.bash/export.sh
-source ~/.bash/alias.sh
-source ~/.bash/dockerfunc.sh
-source ~/.bash/prompt.sh

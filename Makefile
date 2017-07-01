@@ -4,9 +4,7 @@ install: install-bash install-dot install-vim
 
 install-bash:
 	cp -rf `pwd`/bash ~/.bash
-	if [ -a ~/.bashrc ]; then mv ~/.bashrc ~/.bashrc.orig; fi;
 	if [ -a ~/.bash_profile ]; then mv ~/.bash_profile ~/.bash_profile.orig; fi
-	ln -s ~/.bash/bashrc ~/.bashrc
 	ln -s ~/.bash/bash_profile ~/.bash_profile
 	source ~/.bash_profile
 
