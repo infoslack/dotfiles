@@ -1,6 +1,7 @@
 source ~/.bash/export.sh
 source ~/.bash/alias.sh
 source ~/.bash/dockerfunc.sh
+source ~/.bash/functions.sh
 source ~/.bash/prompt.sh
 source /etc/profile.d/git-completion.bash
 
