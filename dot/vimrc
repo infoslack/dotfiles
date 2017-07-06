@@ -3,7 +3,7 @@ source ~/.vim/vimrc
 
 "highlight current line
 set cursorline
-"
+
 "set list and listchars, by default is off
 set list listchars=tab:>-,eol:¬
 set nowrap
@@ -44,11 +44,10 @@ let g:go_get_update = 0
 let g:go_fmt_fail_silently = 1
 
 " Plugin key-mappings.
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
 
 " For conceal markers.
 if has('conceal')
