@@ -13,14 +13,9 @@ set wrap linebreak nolist
 let g:airline_theme= "solarized"
 
 "color scheme
-if $TERM == 'xterm'
-  set  term=xterm-256color
-  set background=dark
-  colorscheme solarized
-else "rule for tmux
-  set background=dark
-  colorscheme solarized
-endif
+set term=xterm-256color
+set background=dark
+colorscheme solarized
 
 "column limit chars
 if exists('+colorcolumn')
@@ -29,7 +24,6 @@ endif
 
 "file type settings
 au BufNewFile,BufRead Makefile setlocal noet ts=4 sw=4
-autocmd FileType asm set et sw=8 ts=8 sts=8
 au BufRead,BufNewFile Jenkinsfile set filetype=groovy
 
 " vim-go setup
@@ -47,7 +41,7 @@ let g:go_fmt_fail_silently = 1
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-
+let g:UltiSnipsEditSplit="vertical"
 
 " For conceal markers.
 if has('conceal')
