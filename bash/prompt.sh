@@ -17,7 +17,7 @@ custom_prompt () {
   local WHITE="\[\033[1;37m\]"
   local YELLOW="\[\033[0;34;1m\]"
 
-  local CHECKING=`git status 2> /dev/null | grep "On branch"`
+  local CHECKING=`git rev-parse HEAD 2> /dev/null`
   if [[ "$CHECKING" != "" ]]; then
 
     local BRANCH=`git branch 2> /dev/null | grep \* | sed 's/* //'`
