@@ -1,58 +1,34 @@
 "define source
 source ~/.vim/vimrc
 
-"highlight current line
-set cursorline
-set updatetime=100
-
-"set list and listchars, by default is off
-set list listchars=tab:>-,eol:¬
-set nowrap
-set wrap linebreak nolist
-
 "settings airline
-let g:airline_theme= "solarized"
+let g:airline_theme= "nord"
 
-"color scheme
-set term=xterm-256color
-set background=dark
-colorscheme solarized
-
-"column limit chars
-if exists('+colorcolumn')
-  set colorcolumn=79
-endif
-
-" vim-go setup
-let g:go_fmt_fail_silently = 1
+"vim-go setup
 let g:go_fmt_command = "goimports"
-let g:go_get_update = 0
-let g:go_auto_type_info = 0
-autocmd FileType go nmap <Leader>i <Plug>(go-info)
-
-let g:go_highlight_functions = 1
-let g:go_highlight_functions_arguments = 1
-let g:go_highlight_function_calls = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_fields = 1
+let g:go_autodetect_gopath = 1
+let g:go_list_type = "quickfix"
 let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
 let g:go_highlight_extra_types = 1
-let g:go_highlight_operators = 1
-let g:go_highlight_build_constraints = 1
-let g:go_highlight_format_strings = 1
+let g:go_highlight_generate_tags = 1
 
-" Plugin key-mappings.
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-let g:UltiSnipsEditSplit="vertical"
+nmap <C-g> :GoDeclsDir<cr>
+imap <C-g> <esc>:<C-u>GoDeclsDir<cr>
 
-" For conceal markers.
+"Terraform plugin
+let g:terraform_align=1
+let g:terraform_commentstring='//%s'
+let g:terraform_fmt_on_save=1
+
+"For conceal markers.
 if has('conceal')
   set conceallevel=2 concealcursor=niv
 endif
 
-" Surround shortcuts
+"Surround shortcuts
 map ,# ysiw#
 vmap ,# c#{<C-R>"}<ESC>
 

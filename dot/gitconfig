@@ -1,15 +1,17 @@
 [user]
 	email = infoslack@gmail.com
 	name = Daniel Romero
-	signingkey = 7C0EEA09
+	signingkey = CE7BED4D
 [color]
   ui = auto
 [core]
   pager = less -R
-	excludesfile = /root/.gitignore_global
+	excludesfile = ~/.gitignore_global
 [alias]
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
   ci = commit
   co = checkout
   br = branch
   st = status
+[url "git@github.com:"]
+	insteadOf = https://github.com/
