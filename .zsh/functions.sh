@@ -1,5 +1,3 @@
-#!/bin/bash
-
 mkd() {
 	mkdir -p "$@"
 	cd "$@" || exit
