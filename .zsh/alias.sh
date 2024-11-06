@@ -1,9 +1,10 @@
-if [[ -x "$(which colorls)" ]]; then
-  alias ll="colorls -A"
-else
-  alias ll="ls -FGlahs"
-fi
+#if [[ -x "$(which colorls)" ]]; then
+#  alias ll="colorls -A"
+#else
+#  alias ll="ls -FGlahs"
+#fi
 
+alias ll="colorls -A"
 alias vi="vim"
 alias cl="clear"
 alias lsof-net="lsof -Pnl +M -i4"
